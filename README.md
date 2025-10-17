@@ -1,2 +1,0 @@
-# AutomationAssignment
-Test automation 

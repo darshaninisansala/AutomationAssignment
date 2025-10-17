@@ -1,0 +1,414 @@
+{
+	"info": {
+		"_postman_id": "76aadc95-b847-443c-92d1-d259fad564b4",
+		"name": "JSONPlaceholder_API_Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24020799"
+	},
+	"item": [
+		{
+			"name": "Unconventional PUT-POST-GET",
+			"item": [
+				{
+					"name": "Insert using PUT",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"PUT to create returns 200 or 201\", function () {\r",
+									"    pm.expect([200, 201]).to.include(pm.response.code);\r",
+									"});\r",
+									"\r",
+									"// Log that using PUT to create a new resource with a high id is unconventional.\r",
+									"// We set an env flag so we can print it in a collection run summary if needed.\r",
+									"pm.environment.set(\"put_created_id\", 10001);\r",
+									"pm.environment.set(\"put_created_status\", pm.response.code);\r",
+									"console.warn(\"Unconventional behavior: Using PUT to create resource with id 10001. Status: \" + pm.response.code);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 10001,\r\n  \"title\": \"Created via PUT\",\r\n  \"body\": \"Body created with PUT\",\r\n  \"userId\": 99\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/posts/10001",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"posts",
+								"10001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update using POST",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"POST to /posts/101 returns 200 or 201\", function () {\r",
+									"    pm.expect([200, 201]).to.include(pm.response.code);\r",
+									"});\r",
+									"\r",
+									"pm.environment.set(\"post_to_update_status\", pm.response.code);\r",
+									"console.warn(\"Unconventional behavior: POST used to update resource /posts/101. Status: \" + pm.response.code);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"POST updating existing (unconventional)\",\r\n  \"body\": \"Body updated using POST\",\r\n  \"userId\": 99\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/posts/101",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"posts",
+								"101"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete using GET",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"GET returns 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Document behavior: This GET is a read; it does not delete. We print an explanation for the report.\r",
+									"console.log(\"Simulating delete via GET: In a real API, GET must not change server state. \" +\r",
+									"            \"DELETE must be used to remove resources. Using GET to delete would violate HTTP semantics.\");\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/posts/101",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"posts",
+								"101"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "{{baseUrl}}/posts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is an array and has > 0 items\", function () {\r",
+							"    const json = pm.response.json();\r",
+							"    pm.expect(Array.isArray(json)).to.be.true;\r",
+							"    pm.expect(json.length).to.be.above(0);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/posts",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"posts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{baseUrl}}/posts/1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"ID equals 1\", function () {\r",
+							"    const json = pm.response.json();\r",
+							"    pm.expect(json.id).to.eql(1);\r",
+							"    pm.expect(json).to.have.property('title');\r",
+							"    pm.expect(json).to.have.property('body');\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/posts/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"posts",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{baseUrl}}/posts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has id\", function () {\r",
+							"    const json = pm.response.json();\r",
+							"    pm.expect(json).to.have.property('id');\r",
+							"    // Save created id to environment for later use if you want\r",
+							"    pm.environment.set(\"createdPostId\", json.id);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "charset",
+						"value": "UTF-8",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"title\": \"Automated test: create\",\r\n  \"body\": \"This is a test body\",\r\n  \"userId\": 10\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/posts",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"posts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{baseUrl}}/posts/1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Title updated\", function () {\r",
+							"    const json = pm.response.json();\r",
+							"    pm.expect(json.title).to.eql(\"Automated test: updated title\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "charset",
+						"value": "UTF-8",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": 1,\r\n  \"title\": \"Automated test: updated title\",\r\n  \"body\": \"Updated body\",\r\n  \"userId\": 1\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/posts/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"posts",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": ""
+		}
+	]
+}
